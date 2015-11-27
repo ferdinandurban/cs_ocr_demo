@@ -5,18 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ocr_demo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="518" Width="795">
     <Grid>
         <Button x:Name="loadDocumentBtn" Content="Load Document" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="93" Click="loadDocumentBtn_Click"/>
-        <TextBox x:Name="sourcePathTxtBox" HorizontalAlignment="Left" Height="23" Margin="108,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="399"/>
-        <Image x:Name="sourceImage" HorizontalAlignment="Left" Height="137" Margin="10,38,0,0" VerticalAlignment="Top" Width="497" RenderTransformOrigin="0.484,0.507"/>
-        <Button x:Name="processBtn" Content="Process" HorizontalAlignment="Left" Margin="10,180,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.071,0.544" Click="button1_Click"/>
-        <ListView x:Name="listView" HorizontalAlignment="Left" Height="110" Margin="10,205,0,0" VerticalAlignment="Top" Width="497">
+        <TextBox x:Name="sourcePathTxtBox" Margin="108,9,10,0" TextWrapping="Wrap" Text="TextBox" Height="24" VerticalAlignment="Top"/>
+        <Image x:Name="sourceImage" Margin="10,38,10,157" RenderTransformOrigin="0.484,0.507"/>
+        <Button x:Name="processBtn" Content="Process" HorizontalAlignment="Left" Margin="10,0,0,132" VerticalAlignment="Bottom" Width="75" RenderTransformOrigin="0.071,0.544" Click="button1_Click"/>
+        <ListView x:Name="listView" Margin="10,0,10,4" Height="110" VerticalAlignment="Bottom">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn/>
+                    <GridViewColumn Header="Name"/>
+                    <GridViewColumn Header="Created"/>
+                    <GridViewColumn Header="From"/>
+                    <GridViewColumn Header="To"/>
+                    <GridViewColumn Header="Topic"/>
+                    <GridViewColumn Header="Date"/>
+                    <GridViewColumn Header="Type"/>
                 </GridView>
             </ListView.View>
+
         </ListView>
 
     </Grid>
