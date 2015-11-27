@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ocr_demo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="907" Width="795">
+        Title="OCR Demo" Height="907" Width="795">
     <Grid>
         <Button x:Name="loadDocumentBtn" Content="Load Document" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="93" Click="loadDocumentBtn_Click"/>
         <TextBox x:Name="sourcePathTxtBox" Margin="108,9,10,0" TextWrapping="Wrap" Height="24" VerticalAlignment="Top" IsEnabled="False"/>
@@ -13,18 +13,11 @@
         <Button x:Name="processBtn" Content="Process" HorizontalAlignment="Left" Margin="10,0,0,132" VerticalAlignment="Bottom" Width="75" RenderTransformOrigin="0.071,0.544" Click="button1_Click" IsEnabled="False"/>
         <ListView x:Name="listView" Margin="10,0,10,4" Height="110" VerticalAlignment="Bottom">
             <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name"/>
-                    <GridViewColumn Header="Created"/>
-                    <GridViewColumn Header="From"/>
-                    <GridViewColumn Header="To"/>
-                    <GridViewColumn Header="Topic"/>
-                    <GridViewColumn Header="Date"/>
-                    <GridViewColumn Header="Type"/>
-                </GridView>
+                <GridView/>
             </ListView.View>
 
         </ListView>
+        <Label x:Name="progressLabel" Content="" HorizontalAlignment="Left" Margin="90,724,0,126" RenderTransformOrigin="-0.49,0.485" Width="687" IsEnabled="False" Visibility="Hidden"/>
 
     </Grid>
 </Window>

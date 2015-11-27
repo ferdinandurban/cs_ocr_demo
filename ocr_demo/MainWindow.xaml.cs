@@ -35,6 +35,7 @@ namespace ocr_demo
         {
             InitializeComponent();
             ocrData = new MyOCRData();
+            progressLabel.Visibility = Visibility.Visible;
         }
 
 
@@ -48,6 +49,8 @@ namespace ocr_demo
 
             if (result == true)
             {
+                ocrData.clearData();
+
                 filePath = dlg.FileName;
                 sourcePathTxtBox.Text = filePath;
 
@@ -63,7 +66,6 @@ namespace ocr_demo
                 ocrData.created = File.GetCreationTime(filePath);
 
                 processBtn.IsEnabled = true;
-
             }
         }
 
@@ -89,9 +91,11 @@ namespace ocr_demo
 
             gridView.Columns.Add(new GridViewColumn { Header = "Name", DisplayMemberBinding = new Binding("filename") });
             gridView.Columns.Add(new GridViewColumn { Header = "Created", DisplayMemberBinding = new Binding("created") });
+            gridView.Columns.Add(new GridViewColumn { Header = "From", DisplayMemberBinding = new Binding("from") });
+            gridView.Columns.Add(new GridViewColumn { Header = "To", DisplayMemberBinding = new Binding("to") });
+            gridView.Columns.Add(new GridViewColumn { Header = "Topic", DisplayMemberBinding = new Binding("topic") });
+            gridView.Columns.Add(new GridViewColumn { Header = "Date", DisplayMemberBinding = new Binding("date") });
             gridView.Columns.Add(new GridViewColumn { Header = "Type", DisplayMemberBinding = new Binding("type") });
-
-
 
             listView.Items.Add(new MyOCRData(ocrData));
         }
