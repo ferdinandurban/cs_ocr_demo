@@ -40,17 +40,12 @@ namespace ocr_demo
 
         private void loadDocumentBtn_Click(object sender, RoutedEventArgs e)
         {
-            // Create OpenFileDialog 
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-
-            // Set filter for file extension and default file extension 
             dlg.DefaultExt = ".png";
             dlg.Filter = "Image documents (.png)|*.png";
-
-            // Display OpenFileDialog by calling ShowDialog method 
+            
             Nullable<bool> result = dlg.ShowDialog();
 
-            // Get the selected file name and display in a TextBox 
             if (result == true)
             {
                 filePath = dlg.FileName;
@@ -67,6 +62,8 @@ namespace ocr_demo
                 ocrData.filename = Regex.Match(filePath, @".*\\([^\\]+$)").Groups[1].Value;
                 ocrData.created = File.GetCreationTime(filePath);
 
+                processBtn.IsEnabled = true;
+
             }
         }
 
@@ -74,25 +71,12 @@ namespace ocr_demo
         {
             try
             {
-                using (var engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default))
-                {
-                    using (var img = Pix.LoadFromFile(filePath))
-                    {
-                        var i = 1;
-                        using (var page = engine.Process(img))
-                        {
-                            var text = page.GetText();
-                            
-                        }
-                    }
-                }
+                ocrData.doOCR(filePath);
             }
             catch (Exception excp)
             {
                 Trace.TraceError(excp.ToString());
-                Console.WriteLine("Unexpected Error: " + excp.Message);
-                Console.WriteLine("Details: ");
-                Console.WriteLine(excp.ToString());
+                MessageBox.Show(excp.ToString(), "Error during OCR", MessageBoxButton.OK);
             }
 
             fillListViewWithOCRData();
@@ -105,6 +89,8 @@ namespace ocr_demo
 
             gridView.Columns.Add(new GridViewColumn { Header = "Name", DisplayMemberBinding = new Binding("filename") });
             gridView.Columns.Add(new GridViewColumn { Header = "Created", DisplayMemberBinding = new Binding("created") });
+            gridView.Columns.Add(new GridViewColumn { Header = "Type", DisplayMemberBinding = new Binding("type") });
+
 
 
             listView.Items.Add(new MyOCRData(ocrData));
