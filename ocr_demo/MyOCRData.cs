@@ -31,14 +31,11 @@ namespace ocr_demo
         public string date { get; set; }
         public string type { get; set; }
 
-
-
         private static string[] topicKeywords = { "subject" };
         private static string[] toKeywords = { "dear", "customer name" };
         private static string[] typeKeywords = { "invoice", "order" };
         private static string[] dateKeywords = { "/", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december" };
         private static string[] greetingsKeywords = { "Best regards", "Sincerely", "Yours faithfully" };
-
 
         // regular expressions for dates
         private string datePattern1 = "(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/((19|20)\\d\\d)";
@@ -73,6 +70,7 @@ namespace ocr_demo
             date = "";
             type = "";
         }
+
         public void doOCR(string filePath)
         {
             List<string> lines = new List<string>();
@@ -90,7 +88,11 @@ namespace ocr_demo
                 do
                 {
                     string s = iter.GetText(PageIteratorLevel.TextLine);
-                    lines.Add(s);
+                    if(s != null)
+                    {
+                        lines.Add(removeLineEndings(s));
+                    }
+                    
                 } while (iter.Next(PageIteratorLevel.TextLine));
             }
             catch (Exception e)
@@ -98,102 +100,85 @@ namespace ocr_demo
                 throw new System.Exception("OCR Parsing Error", e);
             }
 
-            processDocumentLines(lines);
+            processDocument(lines);
         }
 
-        private void processDocumentLines(List<string> source)
+        private void processDocument(List<string> source)
         {
-            bool contains = false;
-            bool hasType = false;
-            bool hasDate = false;
-            bool hasTopic = false;
-            bool hasFrom = false;
-            bool hasTo = false;
-            int index = 0;
-
-            // remove empty lines
             var lines = source.Where(str => !string.IsNullOrWhiteSpace(str)).Distinct().ToList();
 
-            foreach (var line in lines)
+            string result = "";
+
+            foreach (var kw in topicKeywords)
             {
-                contains = false;
-
-                // search for type
-                if (!hasType)
+                if (findInDocument(lines, kw, out result))
                 {
-                    foreach (var kw in typeKeywords)
-                    {
-                        if (contains = line.Contains(kw, StringComparison.OrdinalIgnoreCase))
-                        {
-                            type = kw;
-                            hasType = true;
-                            break;
-                        }
-                    }
+                    this.topic = result;
+                    break;
                 }
+            }
 
-                // search for dates
-                if (!hasDate)
+            foreach (var kw in dateKeywords)
+            {
+                if (findInDocument(lines, kw, out result))
                 {
-                    foreach (var kw in dateKeywords)
-                    {
-                        if (contains = line.Contains(kw, StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (getDate(removeLineEndings(line)))
-                            {   
-                                hasDate = true;
-                            }
-                        }
-                    }
-
-                    // if no relevant date has been found
-                    if(!hasDate) this.date = "";
+                    if(getDate(result)) break;
                 }
-
-                // search for greetings
-                if (!hasFrom)
+            }
+            foreach (var kw in toKeywords)
+            {
+                if (findInDocument(lines, kw, out result))
                 {
-                    foreach (var kw in greetingsKeywords)
-                    {
-                        if (contains = line.Contains(kw, StringComparison.OrdinalIgnoreCase))
-                        {
-                            string l = lines.ElementAt(index + 1);
-                            this.from = removeLineEndings(l);
-                            hasFrom = true;
-                        }
-                    }
+                    this.to = result;
+                    break;
                 }
-
-                // search To
-                if(!hasTo)
+            }
+            foreach (var kw in greetingsKeywords)
+            {
+                if (findInDocument(lines, kw, out result))
                 {
-                    foreach (var kw in toKeywords)
-                    {
-                        if (contains = line.Contains(kw, StringComparison.OrdinalIgnoreCase))
-                        {
-                            this.to = removeLineEndings(getName(line, kw));
-                            hasTo = true;                            
-                        }
-                    }
-                }
+                    int idx = (lines == null ? -1 : lines.IndexOf(result));
 
-                // search topic
-                if (!hasTopic)
+                    this.from = lines.ElementAt(idx + 1); ;
+                    break;
+                }
+            }
+            foreach (var kw in typeKeywords)
+            {
+                if (findInDocument(lines, kw, out result))
                 {
-                    foreach (var kw in topicKeywords)
-                    {
-                        if (contains = line.Contains(kw, StringComparison.OrdinalIgnoreCase))
-                        {
-                            this.topic = removeLineEndings(getName(line, kw));
-                            hasTopic = true;
-                        }
-                    }
+                    this.type = kw;
+                    break;
                 }
-
-                index++;
             }
         }
 
+        private bool findInDocument(List<string> source, string keyword, out string output)
+        {
+            IEnumerable<string> results;
+
+            try
+            {
+                results = source.Where(s => s.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+            }
+            catch (Exception e) 
+            {
+                output = null;
+                return false;
+            }
+            
+            if (results != null && results.Any())
+            {
+                output = results.First();
+                return true;
+            }
+            else
+            {
+                output = "";
+                return false;
+            }
+        }
+        
         private string removeLineEndings(string line)
         {
             return Regex.Replace(line, @"\t|\n|\r", "");
