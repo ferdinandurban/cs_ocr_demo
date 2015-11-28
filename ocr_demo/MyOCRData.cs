@@ -37,7 +37,7 @@ namespace ocr_demo
         private static string[] dateKeywords = { "/", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december" };
         private static string[] greetingsKeywords = { "Best regards", "Sincerely", "Yours faithfully" };
 
-        // regular expressions for dates
+    // regular expressions for dates
         private string datePattern1 = "(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/((19|20)\\d\\d)";
 
         private static Dictionary<string, string> resultsDict;
@@ -113,7 +113,7 @@ namespace ocr_demo
             {
                 if (findInDocument(lines, kw, out result))
                 {
-                    this.topic = result;
+                    this.topic = Regex.Replace(result, kw + "[^a-zA-Z0-9]", "", RegexOptions.IgnoreCase);
                     break;
                 }
             }
@@ -129,7 +129,7 @@ namespace ocr_demo
             {
                 if (findInDocument(lines, kw, out result))
                 {
-                    this.to = result;
+                    this.to = Regex.Replace(result, kw, "", RegexOptions.IgnoreCase);
                     break;
                 }
             }
@@ -139,7 +139,7 @@ namespace ocr_demo
                 {
                     int idx = (lines == null ? -1 : lines.IndexOf(result));
 
-                    this.from = lines.ElementAt(idx + 1); ;
+                    this.from = lines.ElementAt(idx + 1);
                     break;
                 }
             }
@@ -196,7 +196,7 @@ namespace ocr_demo
                 return true;
             }
 
-            regex = new Regex(@"(19|20)\d\d");
+            regex = new Regex(@"(19|2)\d\d");
             match = regex.Match(line);
 
             if (match.Success)
