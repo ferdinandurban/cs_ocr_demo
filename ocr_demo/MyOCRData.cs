@@ -223,19 +223,28 @@ namespace ocr_demo
         }
 
         private void findAddress(List<string> source)
-        {
+        {   
+            // select a regular expression to look for the postal code.
+            // unfortunatelly, there is no universal regex available for the ZIP,
+            // because each country has its own format.
             Regex regex = new Regex(postalCodeGB);
 
-            var address = from line in source
-                          let match = regex.Match(line)
-                          where match.Success
-                          select new
+            // create a variable for address of type IEnumerable
+            var address = from line in source               // iterate thru the whole file
+                          let match = regex.Match(line)     // find the line mathing the regex
+                          where match.Success               // if the line has been found
+                          select new                        // create a new variable with
                           {
-                                idx = source.IndexOf(line),
-                                line1 = source[source.IndexOf(line) - 2],
-                                line2 = source[source.IndexOf(line) - 1],
-                                line3 = line
-                       };
+                              line1 = source[source.IndexOf(line) - 2],   // get first line of the address
+                              line2 = source[source.IndexOf(line) - 1],   // get second line of the address
+                              line3 = line                                // get the last line of the address
+                          };
+
+            // the variable address can be used as follows
+            //foreach (var line in address)
+            //{
+            //    Console.WriteLine(line);
+            //}
         }
     }
 }
